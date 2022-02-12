@@ -1,0 +1,9 @@
+{
+  "name": "Hubble",
+  "description": "Space info on your new tab pages!",
+  "version": "0.1",
+  "manifest_version": 3,
+  "chrome_url_overrides": {
+    "newtab": "tab.html"
+  }
+}
