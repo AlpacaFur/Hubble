@@ -1,3 +1,6 @@
+// Filter to keep text legible against a potentially noisy background!
+$text-legibility: drop-shadow(3px 3px 5px #101b39) drop-shadow(-3px -3px 5px #101b39) drop-shadow(3px -3px 5px #101b39) drop-shadow(-3px 3px 5px #101b39);
+
 @font-face {
   font-family: "Inter";
   src: url("./fonts/Inter-Regular.ttf");
@@ -7,6 +10,16 @@
   font-family: "Inter";
   src: url("./fonts/Inter-Bold.ttf");
   font-weight: bold;
+}
+@font-face {
+  font-family: "Inter";
+  src: url("./fonts/Inter-Medium.ttf");
+  font-weight: 500;
+}
+@font-face {
+  font-family: "Inter";
+  src: url("./fonts/Inter-Medium.ttf");
+  font-weight: 500;
 }
 body {
   font-family: "Inter";
@@ -18,18 +31,46 @@ body {
   background-color: #101b39;
   color: #dce4ea;
   margin: 0px;
+  overflow: hidden;
+  height: 100vh;
 }
 
 #hubble {
   position: absolute;
   bottom: 40px;
-  right: 40px;
-  width: 120px;
+  left: 40px;
+  width: 80px;
   fill: #dce4ea;
   filter: drop-shadow(transparent 1px 1px 0px);
-  transition: filter 0.5s ease;
+  transition: filter 0.25s ease, transform 0.25s ease;
+  transform: scale(1);
+  cursor: pointer;
+  z-index: 1;
   &:hover {
-    filter: drop-shadow(black 1px 1px 10px);
+    filter: drop-shadow(#5555ff 1px 1px 10px);
+    transform: scale(1.05)
+  }
+  &:active {
+    transform: scale(0.95)
+  }
+}
+#apod {
+  position: absolute;
+  bottom: 40px;
+  left: 150px;
+  width: 80px;
+  fill: #dce4ea;
+  filter: drop-shadow(transparent 1px 1px 0px);
+  transition: filter 0.25s ease, transform 0.25s ease;
+  transform: scale(1);
+  cursor: pointer;
+  z-index: 1;
+  &:hover {
+    filter: drop-shadow(#5555ff 1px 1px 10px);
+    transform: scale(1.05)
+  }
+  &:active {
+    transform: scale(0.95)
   }
 }
 
@@ -39,9 +80,33 @@ body {
   left: 40px;
   font-weight: normal;
   margin: 0px;
-  font-size: 50px;
+  font-size: 45px;
   span {
     font-weight: bold;
+  }
+  filter: $text-legibility;
+}
+
+.date-and-time {
+  position: absolute;
+  top: 40px;
+  right: 40px;
+  font-weight: normal;
+  margin: 0px;
+  font-size: 45px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  filter: $text-legibility;
+  p {
+    margin: 0;
+  }
+  #date {
+    font-weight: 500;
+  }
+  #time {
+    font-weight: bold;
+    font-size: 70px;
   }
 }
 
@@ -84,13 +149,90 @@ body {
 img {
   width: 250px;
   height: 250px;
+  border-radius: 10px;
 }
 
 #test-overlay {
-  padding:40px;
+  padding: 20px;
   z-index: 10;
-  display: block;
-  border-radius: 10px;
-  background-color: #55555555;
-  backdrop-filter: blur(5px);
+  // display: block;
+  border-radius: 15px;
+  background-color: #aaaaff11;
+  backdrop-filter: blur(10px);
+  width: 250px;
+  height: 250px;
+  box-shadow: #00000088 1px 1px 10px 0px;
+  display: none;
+}
+canvas {
+  width: 100%;
+  height: auto;
+  background: #101b39;
+  position: absolute;
+}
+
+#solar-system {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  // background-color: grey;
+  width: 1000px;
+  // border-radius: 50%;
+  transform: translate(-50%, -50%);
+  .orbitCircle {
+    stroke: #aaaaff;
+    stroke-dasharray: 1,14;
+    stroke-linecap: round;
+    stroke-width: 3px;
+    opacity: 0.5;
+    fill: transparent;
+  }
+  .planet {
+    transition: transform 0.25s ease;
+    transform-origin: center;
+  }
+  .planet:hover { 
+    transform: scale(1.2);
+  }
+  .fakePlanet {
+    fill: orange;
+  }
+  .title-text {
+    font-size: 30px;
+  }
+  .subtitle-text {
+    font-size: 20px;
+    font-style: italic;
+    font-weight: normal;
+  }
+  .popup-bg {
+    fill: #101b39;
+    stroke: #aaaaff88;
+    stroke-width: 3px;
+  }
+  .fact-card {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    transform: translateX(-10px);
+    &.left {
+      transform: translateX(10px);
+    }
+    &.hover {
+      opacity: 1;
+      transform: translateX(0px);
+    }
+  }
+  .description-text {
+    // font-weight: normal;
+    font-size: 20px;
+    font-weight: 500;
+  }
+  .data-line {
+    fill: red;
+  }
+  .data-text {
+    font-weight: normal;
+    font-size: 20px;
+  }
 }
