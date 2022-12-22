@@ -1,5 +1,58 @@
 const SYSTEM_SIZE = 1050 / 2
 
+document.getElementById("hubble").addEventListener("click", ()=>{
+  window.open("https://twitter.com/spacetelelive")
+})
+
+const nameBox = document.getElementById("nameBox")
+const salutationName = document.getElementById("salutationName")
+salutationName.textContent = (localStorage.name || "Hacker") + "!"
+nameBox.value = localStorage.name || "Hacker"
+
+nameBox.addEventListener("keyup", ()=>{
+  if (nameBox.value.trim() != "") {
+    localStorage.name = nameBox.value.trim()
+    salutationName.textContent = nameBox.value.trim() + "!"
+
+  }
+})
+
+document.getElementById("apod").addEventListener("click", ()=>{
+  document.getElementById("apod-overlay").classList.add("visible")
+  document.getElementById("dim").classList.add("visible")
+})
+
+document.getElementById("settings").addEventListener("click", ()=>{
+  document.getElementById("settings-overlay").classList.add("visible")
+  document.getElementById("dim").classList.add("visible")
+})
+
+document.getElementById("info").addEventListener("click", ()=>{
+  document.getElementById("about-overlay").classList.add("visible")
+  document.getElementById("dim").classList.add("visible")
+})
+
+document.getElementById("close-apod").addEventListener("click", ()=>{
+  document.getElementById("apod-overlay").classList.remove("visible")
+  document.getElementById("dim").classList.remove("visible")
+})
+
+document.getElementById("close-settings").addEventListener("click", ()=>{
+  document.getElementById("settings-overlay").classList.remove("visible")
+  document.getElementById("dim").classList.remove("visible")
+})
+
+document.getElementById("close-about").addEventListener("click", ()=>{
+  document.getElementById("about-overlay").classList.remove("visible")
+  document.getElementById("dim").classList.remove("visible")
+})
+
+document.getElementById("dim").addEventListener("click", ()=>{
+  document.getElementById("apod-overlay").classList.remove("visible")
+  document.getElementById("about-overlay").classList.remove("visible")
+  document.getElementById("settings-overlay").classList.remove("visible")
+  document.getElementById("dim").classList.remove("visible")
+})
 
 function fetchJSON(url) {
   return fetch(url)
@@ -18,8 +71,8 @@ async function getMarsWeather() {
 async function getWeather() {
   navigator.geolocation.getCurrentPosition(async (location)=>{
 
-    const weather = await fetchJSON(`http://api.openweathermap.org/data/2.5/weather?lat=${location.coords.latitude}&lon=${location.coords.longitude}&appid=756a90314ca3b9bcfb4fc4bb4d7933e2&units=imperial`)
-    fetchJSON(`http://api.openweathermap.org/geo/1.0/reverse?lat=${location.coords.latitude}&lon=${location.coords.longitude}&limit=10&appid=756a90314ca3b9bcfb4fc4bb4d7933e2`)
+    const weather = await fetchJSON(`https://api.openweathermap.org/data/2.5/weather?lat=${location.coords.latitude}&lon=${location.coords.longitude}&appid=${OPENWEATHERMAPKEY}&units=imperial`)
+    fetchJSON(`https://api.openweathermap.org/geo/1.0/reverse?lat=${location.coords.latitude}&lon=${location.coords.longitude}&limit=10&appid=${OPENWEATHERMAPKEY}`)
       .then((res)=>{
         document.getElementById("subtitle-earth").textContent = `${res[0].name}, ${res[0].state}` 
         console.log()
@@ -56,14 +109,14 @@ async function epicImages() {
 
 
 async function apodImage() {
-  let data = await fetchJSON("https://api.nasa.gov/planetary/apod?api_key=aB8KkbPvQwWNeEIZ4sGJdUhEaMghSac1MGXSD1d4")
+  let data = await fetchJSON(`https://api.nasa.gov/planetary/apod?api_key=${NASAAPIKEY}`)
   const img = new Image()
   img.src = data.hdurl
   return img
 }
 
 // epicImages().then((imgs=>imgs.forEach((img)=>document.body.append(img))))
-apodImage().then(img=>document.getElementById("test-overlay").append(img))
+apodImage().then(img=>document.getElementById("apod-overlay").append(img))
 
 
 
@@ -522,6 +575,9 @@ function hoursAndMinsToTime(hours, minsRaw) {
   }
   else if (hours > 0 && hours < 12) {
     return `${hours}:${mins} AM`
+  } 
+  else if (hours == 12) {
+    return `${hours}:${mins} PM`
   }
   else {
     return `${hours-12}:${mins} PM`
@@ -545,5 +601,5 @@ dateElem.textContent = getDate()
 tickClock()
 setInterval(tickClock, 1)
 getMarsWeather()
-// getWeather()
+getWeather()
 // createPopup(560, 560)
